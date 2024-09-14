@@ -1,5 +1,5 @@
-import { FileDto } from "../api/file";
-import { FolderDto } from "../api/folder";
+import { FileDto } from "../../api/file";
+import { FolderDto } from "../../api/folder";
 
 export type RecursiveFolderTree = Array<FolderDto & {
     folders: RecursiveFolderTree;

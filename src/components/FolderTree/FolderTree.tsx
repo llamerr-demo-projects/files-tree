@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { RecursiveFolderTree } from "./FolderTree.types";
+import { Button } from "antd";
+import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 
+import { File } from "../File/File";
+
+import { RecursiveFolderTree } from "./FolderTree.types";
 import "./FolderTree.styles.css";
 
 export interface TreeProps {
@@ -40,13 +44,13 @@ export const FolderTree: React.FC<TreeProps> = ({ folders, className, toggleAllS
       <ul className={className}>
         {folders.map((folder, index) => (
           <li key={folder.id}>
-            <button onClick={() => toggle(index)}>{expanded[index] ? "▼" : "▶"}</button>
-            {folder.name}{' '}
+            <Button onClick={() => toggle(index)} icon={expanded[index] ? <CaretDownOutlined /> : <CaretRightOutlined />} />
+            {folder.name}
             {(expanded[index] && folder.folders.length > 0) && (
               <FolderTree folders={folder.folders} toggleAllState={toggleAllState} onToggleReset={onToggleReset} />
             )}
             {(expanded[index] && folder.files.length > 0) && (
-              <ul>{folder.files.map((file) => <li key={file.id}>{file.name}</li>)}</ul>
+              <ul>{folder.files.map((file) => <li key={file.id}><File file={file} /></li>)}</ul>
             )}
           </li>
         ))}

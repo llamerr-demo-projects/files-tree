@@ -50,7 +50,7 @@ export const sourceApi = {
             folderId: 713,
           },
         ]);
-      }, 1000); // Delay of 1000 milliseconds (1 second)
+      }, 3000); // Delay of 1000 milliseconds (1 second)
     });
   },
   getFolders: (): Promise<Array<FolderDto>> => {

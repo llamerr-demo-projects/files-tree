@@ -1,14 +1,17 @@
-import "./styles.css";
-import { Button } from "antd";
 import { useEffect, useState } from "react";
+import { Button, Layout, Skeleton  } from "antd";
+import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 
-import { FolderTree } from "./components/FolderTree";
+import { FolderTree } from "./components/FolderTree/FolderTree";
 import { sourceApi } from "./api/source";
-import { processFiles, processFolders, RecursiveFolderTree } from "./components/FolderTree.types";
+import { processFiles, processFolders, RecursiveFolderTree } from "./components/FolderTree/FolderTree.types";
+
+import "./styles.css";
 
 export default function App() {
   const [foldersList, setFoldersList] = useState<RecursiveFolderTree>([]);
   const [toggleAllState, setToggleAllState] = useState<boolean|null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -22,6 +25,7 @@ export default function App() {
       const processedFolders = processFolders(folders);
       processFiles(processedFolders, files);
       setFoldersList(processedFolders)
+      setLoading(false);
     });
   }, []);
 
@@ -36,15 +40,28 @@ export default function App() {
   
   return (
     <div className="App">
-      <Button>ANTD </Button>
-      <tr />
-      <button 
-        onClick={toggleAll} 
-        className={toggleAllState !== null ? "" : "inactive"}
-      >
-        Toggle All {toggleAllState ? "▼" : "▶"}
-      </button>
-      <FolderTree folders={foldersList} onToggleReset={resetTogglaAll} toggleAllState={toggleAllState} className="folder-tree" />
+      <Layout style={{ minWidth: '320px', width: 'fit-content', margin: '0 auto', padding: 24 }}>
+        <Layout.Header style={{ background: '#fff', padding: 0 }}>
+          <div className="logo" />
+          <Button
+            disabled={loading} 
+            onClick={toggleAll} 
+            className={toggleAllState !== null ? "" : "inactive"}
+            icon={toggleAllState !== null ? <CaretDownOutlined /> : <CaretRightOutlined />}
+          >
+            Toggle All
+          </Button>
+        </Layout.Header>
+        <Layout.Content>
+          <div style={{ background: '#fff', minHeight: 280, padding: '0 20px' }}>
+            {loading ? (
+              <Skeleton active />
+            ) : (
+              <FolderTree folders={foldersList} onToggleReset={resetTogglaAll} toggleAllState={toggleAllState} className="folder-tree" />
+            )}
+          </div>
+        </Layout.Content>
+      </Layout>      
     </div>
   );
 }
