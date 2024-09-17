@@ -2,17 +2,31 @@ import { useEffect, useState } from "react";
 import { Button, Layout, Skeleton  } from "antd";
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 
-import { FolderTree } from "./components/FolderTree/FolderTree";
 import { sourceApi } from "./api/source";
+import { FileDto } from "./api/file";
+import { SearchFilter, SearchFilterValue } from "./components/SearchFilter/SearchFilter";
+import { FolderTree } from "./components/FolderTree/FolderTree";
 import { processFiles, processFolders, RecursiveFolderTree } from "./components/FolderTree/FolderTree.types";
 
 import "./styles.css";
+
+const createFilesFilter = (filterValue: SearchFilterValue) => (file: FileDto, index: number, array: FileDto[]): boolean => {
+  if (filterValue.value.length > 0 && !file.name.toLocaleLowerCase().includes(filterValue.value.trim().toLocaleLowerCase())) {
+    return false;
+  }
+  if (filterValue.options.length > 0 && !filterValue.options.includes(file.type.toString())) {
+    return false;
+  }
+  return true;
+}
 
 export default function App() {
   const [foldersList, setFoldersList] = useState<RecursiveFolderTree>([]);
   const [toggleAllState, setToggleAllState] = useState<boolean|null>(null);
   const [loading, setLoading] = useState(true);
+  const [filterValue, setFilterValue] = useState<SearchFilterValue>({value: '', options: []});
 
+  // fetch data
   useEffect(() => {
     const fetchFolders = async () => {
       return await sourceApi.getFolders()
@@ -41,8 +55,8 @@ export default function App() {
   return (
     <div className="App">
       <Layout style={{ minWidth: '320px', width: 'fit-content', margin: '0 auto', padding: 24 }}>
-        <Layout.Header style={{ background: '#fff', padding: 0 }}>
-          <div className="logo" />
+        <Layout.Header style={{ background: '#fff', padding: 0, display: 'flex', flexDirection: 'column' }}>
+          <SearchFilter onChange={(value) => setFilterValue(value)} />
           <Button
             disabled={loading} 
             onClick={toggleAll} 
@@ -53,11 +67,11 @@ export default function App() {
           </Button>
         </Layout.Header>
         <Layout.Content>
-          <div style={{ background: '#fff', minHeight: 280, padding: '0 20px' }}>
+          <div style={{ background: '#fff', minHeight: 280, padding: '20px' }}>
             {loading ? (
               <Skeleton active />
             ) : (
-              <FolderTree folders={foldersList} onToggleReset={resetTogglaAll} toggleAllState={toggleAllState} className="folder-tree" />
+              <FolderTree folders={foldersList} filterFn={createFilesFilter(filterValue)} onToggleReset={resetTogglaAll} toggleAllState={toggleAllState} className="folder-tree" />
             )}
           </div>
         </Layout.Content>
