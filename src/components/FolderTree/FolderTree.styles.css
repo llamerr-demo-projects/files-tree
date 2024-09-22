@@ -1,0 +1,29 @@
+button.inactive {
+    color: grey;
+}
+
+.folder-tree {
+    width: fit-content;
+    min-width: 320px;
+    margin: auto;
+    text-align: left;
+
+    button {
+        width: 30px;
+    }
+}
+
+ul > ul {
+    border: 1px solid;
+    padding: 0;
+    padding-left: 25px;
+}
+
+li {
+    list-style: none;
+    line-height: 25px;
+}
+
+li > ul > li:before {
+    content: '├──';
+}

@@ -9,13 +9,23 @@
   ],
   "main": "src/index.tsx",
   "dependencies": {
+    "@langchain/anthropic": "^0.3.1",
+    "@langchain/core": "^0.3.1",
+    "@langchain/groq": "^0.1.1",
+    "@langchain/openai": "^0.3.0",
+    "antd": "5.16.4",
+    "groq-sdk": "^0.7.0",
+    "langchain": "^0.3.2",
     "loader-utils": "3.2.1",
+    "mobx": "^6.13.2",
+    "mobx-react-lite": "^4.0.7",
+    "openai": "^4.62.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-scripts": "5.0.1",
-    "antd": "5.16.4",
-    "mobx": "6.12.3",
-    "mobx-react-lite": "4.0.7"
+    "usehooks-ts": "^3.1.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.3"
   },
   "devDependencies": {
     "@types/react": "18.2.38",
