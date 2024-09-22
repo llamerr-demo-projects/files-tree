@@ -4,9 +4,11 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 
 import { sourceApi } from "./api/source";
 import { FileDto } from "./api/file";
+import { FolderDto } from "./api/folder";
 import { SearchFilter, SearchFilterValue } from "./components/SearchFilter/SearchFilter";
 import { FolderTree } from "./components/FolderTree/FolderTree";
 import { processFiles, processFolders, RecursiveFolderTree } from "./components/FolderTree/FolderTree.types";
+import { ChatGPTGenerator } from "./components/ChatGPTGenerator/ChatGPTGenerator";
 
 import "./styles.css";
 
@@ -18,6 +20,12 @@ const createFilesFilter = (filterValue: SearchFilterValue) => (file: FileDto, in
     return false;
   }
   return true;
+}
+
+const processData = (data: {folders: Array<FolderDto>, files: Array<FileDto>}) => {
+  const processedFolders = processFolders(data.folders);
+  processFiles(processedFolders, data.files);
+  return processedFolders;
 }
 
 export default function App() {
@@ -36,9 +44,7 @@ export default function App() {
     }
 
     Promise.all([fetchFolders(), fetchFiles()]).then(([folders, files]) => {
-      const processedFolders = processFolders(folders);
-      processFiles(processedFolders, files);
-      setFoldersList(processedFolders)
+      setFoldersList(processData({folders, files}))
       setLoading(false);
     });
   }, []);
@@ -55,8 +61,9 @@ export default function App() {
   return (
     <div className="App">
       <Layout style={{ minWidth: '320px', width: 'fit-content', margin: '0 auto', padding: 24 }}>
-        <Layout.Header style={{ background: '#fff', padding: 0, display: 'flex', flexDirection: 'column' }}>
-          <SearchFilter onChange={(value) => setFilterValue(value)} />
+        <Layout.Header style={{ background: '#fff', padding: 0, display: 'flex', flexDirection: 'column', 'height': 'fit-content' }}>
+          <ChatGPTGenerator onDataLoaded={(data) => setFoldersList(processData(data))} />
+          <SearchFilter disabled={loading} onChange={(value) => setFilterValue(value)} />
           <Button
             disabled={loading} 
             onClick={toggleAll} 
